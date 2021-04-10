@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IMDB</title>
+</head>
+
+<link href="main.css" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.gstatic.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css" integrity="sha512-+4zCK9k+qNFUR5X+cKL9EIR+ZOhtIloNl9GIKS57V1MyNsYpYcUrUeQc9vNfzsWfV28IaLL3i96P9sdNyeRssA==" crossorigin="anonymous" />
+
+<body>
+    
+    <h1 id="header">Movie Listings 
+        &nbsp; <i class="fas fa-list-alt"></i>
+    </h1>
+<form>
+    <input type="text" id="search" placeholder="Search For A Movie...">
+</form>
+    <ul>
+
+    </ul>
+    <h1 id="error"></h1>
+    <p id="footer">MMDB &copy;2020</p>
+
+
+    <style>
+        #header{
+            padding:20px;
+            color:white;
+            background-color: black;
+            text-align: center;
+            width: 100%;
+            font-size: 40px;
+        }
+
+        #search{
+            padding:14px;
+            width: 100%;
+            border:solid 3px gray;
+            border-radius: 4px;
+        }
+
+        #footer{
+            padding:10px;
+            color:white;
+            background-color: black;
+            text-align: center;
+            width: 100%;
+        }
+
+        body{
+            background-color: rgb(168, 165, 165);
+        }
+        ul{
+            text-align: center;
+            list-style: none;
+        }
+
+        #error{
+            color:black;
+            text-align: center;
+        }
+        
+
+    </style>
+
+    <script src="jquery-3.5.1.min.js"></script>
+
+    <script>
+        $('form').submit(function(e){
+            e.preventDefault();
+            let search=$('#search').val();
+            getMovies(search);
+            $('#search').val('');
+        });
+
+        function getMovies(search){
+            $.ajax({
+            method:'GET',
+                url:"http://www.omdbapi.com/?apikey=c8e248b5&s="+search,
+            }).done(function(data){
+
+                if(data.Response==='False'){
+                    $('#error').html(`<i class="fas fa-search"></i> ${data.Error}`)
+                }
+              
+                let movies=data.Search;
+                console.log(data);
+                let output=""
+                //console.log(data);
+                $.each(movies,function(ind,movies){
+
+                        output+=
+                                `
+                                <li class="listing">
+                                <img src=${movies.Poster} style="border-radius:5%; box-shadow:0px 0px 9px 0px">
+                                <h2><u>${movies.Title}</u></h2>
+                                <p>Released Year:${movies.Year}</p>
+                                <p>${movies.Type}</p>
+                                <p style="font-size:12px">IMDB ID:${movies.imdbID}</p>
+                                </li>
+                                <br><hr><br>
+                                `
+                })
+                $('ul').html(output);
+            })
+        }
+
+    </script>
+
+</body>
+</html>
